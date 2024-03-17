@@ -31,4 +31,28 @@ public class FriendRelationShip {
 	@Column(name = "friend_id")
 	private Long friend_id;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Long getFriend_id() {
+		return friend_id;
+	}
+
+	public void setFriend_id(Long friend_id) {
+		this.friend_id = friend_id;
+	}
+
 }
