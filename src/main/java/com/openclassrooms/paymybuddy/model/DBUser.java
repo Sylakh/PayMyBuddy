@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "user")
-public class User {
+public class DBUser {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +30,9 @@ public class User {
 
 	@Column(name = "password")
 	private String password;
+
+	@Column(name = "role")
+	private String role;
 
 	@Column(name = "nickname")
 	private String nickName;
@@ -47,6 +50,14 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	List<BankAccount> bankAccounts = new ArrayList<>();
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	public Long getId() {
 		return id;

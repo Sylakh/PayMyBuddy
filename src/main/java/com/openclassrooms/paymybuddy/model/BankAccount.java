@@ -35,7 +35,7 @@ public class BankAccount {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
 	@JoinColumn(name = "user_id")
-	private User user;
+	private DBUser user;
 
 	public Long getId() {
 		return id;
@@ -69,11 +69,11 @@ public class BankAccount {
 		this.balance = balance;
 	}
 
-	public User getUser() {
+	public DBUser getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(DBUser user) {
 		this.user = user;
 	}
 

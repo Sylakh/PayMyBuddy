@@ -7,11 +7,15 @@ create table user(
     id int PRIMARY KEY AUTO_INCREMENT,
     email varchar(255) UNIQUE NOT NULL,
     password varchar(255) NOT NULL,
-    nickname varchar(255) NOT NULL,
-    firstname VARCHAR(100) NOT NULL,
-    lastname VARCHAR(100) NOT NULL,
+    role varchar(255) NOT NULL,
+    nickname varchar(255),
+    firstname VARCHAR(100),
+    lastname VARCHAR(100),
     user_actif boolean
 );
+
+INSERT INTO user (email, password, role) VALUES ('user@email.com', '$2y$10$.qkbukzzX21D.bqbI.B2R.tvWP90o/Y16QRWVLodw51BHft7ZWbc.', 'USER'),
+('admin@email.com', '$2y$10$kp1V7UYDEWn17WSK16UcmOnFd1mPFVF6UkLrOOCGtf24HOYt8p1iC', 'ADMIN');
 
 /* TABLE friendrelationship */
 create table friendrelationship(

@@ -26,7 +26,7 @@ public class FriendRelationShip {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
 	@JoinColumn(name = "user_id")
-	private User user;
+	private DBUser user;
 
 	@Column(name = "friend_id")
 	private Long friend_id;
@@ -39,11 +39,11 @@ public class FriendRelationShip {
 		this.id = id;
 	}
 
-	public User getUser() {
+	public DBUser getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(DBUser user) {
 		this.user = user;
 	}
 
