@@ -1,0 +1,131 @@
+package com.openclassrooms.paymybuddy.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.openclassrooms.paymybuddy.model.BankAccount;
+import com.openclassrooms.paymybuddy.model.DBUser;
+import com.openclassrooms.paymybuddy.model.FriendRelationShip;
+import com.openclassrooms.paymybuddy.model.Transaction;
+import com.openclassrooms.paymybuddy.repository.BankAccountRepository;
+import com.openclassrooms.paymybuddy.repository.DBUserRepository;
+
+@Service
+public class TransactionService {
+
+	private static final Logger logger = LogManager.getLogger("TransactionService");
+
+	@Autowired
+	private DBUserRepository dbuserRepository;
+
+	@Autowired
+	private BankAccountRepository bankAccountRepository;
+
+	public Transaction createTransaction(String emitterEmail, Long receiverId, double amount, boolean withdraw,
+			String description) {
+		logger.info("Create a new transaction in database");
+
+		// trouver le dbuser emitter
+
+		// si non withdraw alors
+		// verifier que le dbuser possede les fonds
+		// trouver le dbuser receiver
+		// verifier qu'il fait partie des amis
+		// attribuer les fonds
+		// sauvegarder la transaction et le dbuser emitter
+		// sauvegarder le dbuser receiver
+
+		// si withdraw
+		// verifier que le dbuser possede les fonds
+		// trouver le bankaccount
+		// verifier qu'il fait parti des bankaccount du dbuser
+		// retirer les fonds du dbuser
+		// sauvegarder la transaction et le dbuser
+
+		Optional<DBUser> optionalEmitter = dbuserRepository.findByEmail(emitterEmail);
+		if (optionalEmitter.isPresent()) {
+			DBUser emitter = optionalEmitter.get();
+			if (emitter.getBalance() > amount) {
+				if (!withdraw) {
+					Optional<DBUser> optionalReceiver = dbuserRepository.findById(receiverId);
+					if (optionalReceiver.isPresent()) {
+						DBUser receiver = optionalReceiver.get();
+						Boolean isFriend = false;
+						for (FriendRelationShip friend : emitter.getFriends()) {
+							if (friend.getFriend_id() == receiver.getId()) {
+								isFriend = true;
+								break;
+							}
+						}
+						if (isFriend == true) {
+							emitter.setBalance(emitter.getBalance() - amount);
+							receiver.setBalance(receiver.getBalance() + amount);
+							List<Transaction> transactions = new ArrayList<>();
+							Transaction transaction = new Transaction();
+							transactions = emitter.getTransactions();
+							transaction.setUser(emitter);
+							transaction.setReceiverId(receiver.getId());
+							transaction.setWithdraw(withdraw);
+							transaction.setAmount(amount);
+							transaction.setDescription(description);
+							transactions.add(transaction);
+							emitter.setTransactions(transactions);
+							dbuserRepository.save(emitter);
+							dbuserRepository.save(receiver);
+							return transaction;
+						} else {
+							logger.info("receiver not friend with emitter");
+							return null;
+						}
+
+					} else {
+						logger.info("receiver not found");
+						return null;
+					}
+
+				} else {
+					Optional<BankAccount> optionalBankAccount = bankAccountRepository.findById(receiverId);
+					if (optionalBankAccount.isPresent()) {
+						BankAccount bankAccount = optionalBankAccount.get();
+						if (bankAccount.getUser().getEmail().equals(emitter.getEmail())) {
+							emitter.setBalance(emitter.getBalance() - amount);
+							List<Transaction> transactions = new ArrayList<>();
+							Transaction transaction = new Transaction();
+							transactions = emitter.getTransactions();
+							transaction.setUser(emitter);
+							transaction.setReceiverId(bankAccount.getId());
+							transaction.setWithdraw(withdraw);
+							transaction.setAmount(amount);
+							transaction.setDescription(description);
+							transactions.add(transaction);
+							emitter.setTransactions(transactions);
+							dbuserRepository.save(emitter);
+							return transaction;
+						} else {
+							logger.info("Bank account not belong to emitter");
+							return null;
+						}
+
+					} else {
+						logger.info("Bank account not found");
+						return null;
+					}
+				}
+			} else {
+				logger.info("not enough fund for this transaction");
+				return null;
+			}
+		} else {
+			logger.info("emitter not found");
+			return null;
+		}
+
+	}
+
+}

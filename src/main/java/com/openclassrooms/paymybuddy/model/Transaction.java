@@ -23,24 +23,30 @@ import lombok.Setter;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "bankaccount")
-public class BankAccount {
+@Table(name = "transaction")
+public class Transaction {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "bankname")
-	private String bankName;
-
-	@Column(name = "iban")
-	private String iban;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "emitter_id")
 	private DBUser user;
+
+	@Column(name = "receiver_id")
+	private Long receiverId;
+
+	@Column(name = "withdraw")
+	private boolean withdraw;
+
+	@Column(name = "amount")
+	private double amount;
+
+	@Column(name = "description")
+	private String description;
 
 	public Long getId() {
 		return id;
@@ -50,28 +56,44 @@ public class BankAccount {
 		this.id = id;
 	}
 
-	public String getBankName() {
-		return bankName;
-	}
-
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
-	}
-
-	public String getIban() {
-		return iban;
-	}
-
-	public void setIban(String iban) {
-		this.iban = iban;
-	}
-
 	public DBUser getUser() {
 		return user;
 	}
 
 	public void setUser(DBUser user) {
 		this.user = user;
+	}
+
+	public Long getReceiverId() {
+		return receiverId;
+	}
+
+	public void setReceiverId(Long receiverId) {
+		this.receiverId = receiverId;
+	}
+
+	public boolean isWithdraw() {
+		return withdraw;
+	}
+
+	public void setWithdraw(boolean withdraw) {
+		this.withdraw = withdraw;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

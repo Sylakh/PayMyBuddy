@@ -2,6 +2,7 @@ package com.openclassrooms.paymybuddy.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,8 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		DBUser user = dbUserRepository.findByEmail(email);
-
+		Optional<DBUser> optionalUser = dbUserRepository.findByEmail(email);
+		DBUser user = optionalUser.get();
 		return new User(user.getEmail(), user.getPassword(), getGrantedAuthorities(user.getRole()));
 	}
 

@@ -13,8 +13,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Entity
 @Table(name = "user")
@@ -34,6 +42,9 @@ public class DBUser {
 	@Column(name = "role")
 	private String role;
 
+	@Column(name = "balance")
+	private double balance;
+
 	@Column(name = "nickname")
 	private String nickName;
 
@@ -51,16 +62,20 @@ public class DBUser {
 	@JsonManagedReference
 	List<BankAccount> bankAccounts = new ArrayList<>();
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+	@JsonManagedReference
+	List<Transaction> transactions = new ArrayList<>();
 
 	public Long getId() {
 		return id;
+	}
+
+	public List<Transaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
 	}
 
 	public void setId(Long id) {
@@ -81,6 +96,14 @@ public class DBUser {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public String getNickName() {
@@ -121,6 +144,14 @@ public class DBUser {
 
 	public void setBankAccounts(List<BankAccount> bankAccounts) {
 		this.bankAccounts = bankAccounts;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
 	}
 
 }
