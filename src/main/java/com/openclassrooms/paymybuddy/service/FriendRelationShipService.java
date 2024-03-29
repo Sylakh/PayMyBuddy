@@ -21,7 +21,7 @@ public class FriendRelationShipService {
 	@Autowired
 	private DBUserRepository dbuserRepository;
 
-	public FriendRelationShip createFriendRelationShip(String userEmail1, String userEmail2) {
+	public FriendRelationShip createFriendRelationShip(String userEmail1, String userEmail2) throws Exception {
 		logger.info("Create a new Friend RelationShip in database");
 		Optional<DBUser> optionalDBUser1 = dbuserRepository.findByEmail(userEmail1);
 		if (optionalDBUser1.isPresent()) {
@@ -51,7 +51,7 @@ public class FriendRelationShipService {
 
 		}
 		logger.info("Creation of a new Friend RelationShip impossible");
-		return null;
+		throw new Exception("Creation of a new Friend RelationShip impossible");
 	}
 
 }

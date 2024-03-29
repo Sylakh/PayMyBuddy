@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.openclassrooms.paymybuddy.model.BankAccount;
 import com.openclassrooms.paymybuddy.model.DBUser;
@@ -27,8 +28,9 @@ public class TransactionService {
 	@Autowired
 	private BankAccountRepository bankAccountRepository;
 
+	@Transactional
 	public Transaction createTransaction(String emitterEmail, Long receiverId, double amount, boolean withdraw,
-			String description) {
+			String description) throws Exception {
 		logger.info("Create a new transaction in database");
 
 		// trouver le dbuser emitter
@@ -78,15 +80,16 @@ public class TransactionService {
 							emitter.setTransactions(transactions);
 							dbuserRepository.save(emitter);
 							dbuserRepository.save(receiver);
+							logger.info("new transaction done");
 							return transaction;
 						} else {
 							logger.info("receiver not friend with emitter");
-							return null;
+							throw new Exception("receiver not friend with emitter");
 						}
 
 					} else {
 						logger.info("receiver not found");
-						return null;
+						throw new Exception("receiver not found");
 					}
 
 				} else {
@@ -106,24 +109,25 @@ public class TransactionService {
 							transactions.add(transaction);
 							emitter.setTransactions(transactions);
 							dbuserRepository.save(emitter);
+							logger.info("new withdraw done");
 							return transaction;
 						} else {
 							logger.info("Bank account not belong to emitter");
-							return null;
+							throw new Exception("Bank account not belong to emitter");
 						}
 
 					} else {
 						logger.info("Bank account not found");
-						return null;
+						throw new Exception("Bank account not found");
 					}
 				}
 			} else {
 				logger.info("not enough fund for this transaction");
-				return null;
+				throw new Exception("not enough fund for this transaction");
 			}
 		} else {
 			logger.info("emitter not found");
-			return null;
+			throw new Exception("emitter of the transaction not found");
 		}
 
 	}

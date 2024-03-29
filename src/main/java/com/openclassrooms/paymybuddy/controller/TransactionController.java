@@ -20,7 +20,8 @@ public class TransactionController {
 
 	@PostMapping("/transaction")
 	public Transaction createTransaction(@RequestParam String emitterEmail, @RequestParam Long receiverId,
-			@RequestParam double amount, @RequestParam boolean withdraw, @RequestParam String description) {
+			@RequestParam double amount, @RequestParam boolean withdraw, @RequestParam String description)
+			throws Exception {
 		logger.info("Create a new transaction in database");
 		return transactionService.createTransaction(emitterEmail, receiverId, amount, withdraw, description);
 	}

@@ -19,7 +19,8 @@ public class FriendRelationshipController {
 	private FriendRelationShipService friendRelationShipService;
 
 	@PostMapping("/friendrelationship")
-	public FriendRelationShip createRelation(@RequestParam String userEmail1, @RequestParam String userEmail2) {
+	public FriendRelationShip createRelation(@RequestParam String userEmail1, @RequestParam String userEmail2)
+			throws Exception {
 		logger.info("Create a new Friend RelationShip in database");
 		return friendRelationShipService.createFriendRelationShip(userEmail1, userEmail2);
 	}
