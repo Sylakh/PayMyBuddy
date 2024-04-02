@@ -26,12 +26,14 @@ public class SpringSecurityConfig {
 			auth.requestMatchers("/admin").hasRole("ADMIN");
 			auth.requestMatchers("/user").hasRole("USER");
 			auth.requestMatchers("/dbuser").permitAll();
-			auth.requestMatchers("/bankaccount").permitAll();
-			auth.requestMatchers("/friendrelationship").permitAll();
-			auth.requestMatchers("/transaction").permitAll();
+			auth.requestMatchers("/bankaccount").authenticated();
+			auth.requestMatchers("/friendrelationship").authenticated();
+			auth.requestMatchers("/transaction").authenticated();
 			auth.anyRequest().authenticated();
 		})
 
+				.httpBasic(Customizer.withDefaults()) // Active l'authentification Basic Auth pour les requêtes
+														// authentifiées
 				.formLogin(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable);
 
 		return http.build();

@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.paymybuddy.model.BankAccount;
+import com.openclassrooms.paymybuddy.model.DBUser;
 import com.openclassrooms.paymybuddy.service.BankAccountService;
+import com.openclassrooms.paymybuddy.service.DBUserService;
 
 @RestController
 public class BankAccountController {
@@ -18,11 +20,15 @@ public class BankAccountController {
 	@Autowired
 	private BankAccountService bankAccountService;
 
+	@Autowired
+	private DBUserService dbuserService;
+
 	@PostMapping("/bankaccount")
-	public BankAccount addBankAccount(@RequestParam String email, @RequestParam String bankName,
-			@RequestParam String iban) {
+	public BankAccount addBankAccount(@RequestParam String bankName, @RequestParam String iban) throws Exception {
 		logger.info("Create a new Bank Account in database for dbuser ");
-		return bankAccountService.createBankAccount(email, bankName, iban);
+		DBUser dbuser = dbuserService.getCurrentUser();
+		System.out.println("user connected: " + dbuser.getEmail());
+		return bankAccountService.createBankAccount(dbuser.getEmail(), bankName, iban);
 	}
 
 }

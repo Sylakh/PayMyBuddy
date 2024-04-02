@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.paymybuddy.model.DBUser;
 import com.openclassrooms.paymybuddy.model.FriendRelationShip;
+import com.openclassrooms.paymybuddy.service.DBUserService;
 import com.openclassrooms.paymybuddy.service.FriendRelationShipService;
 
 @RestController
@@ -18,11 +20,15 @@ public class FriendRelationshipController {
 	@Autowired
 	private FriendRelationShipService friendRelationShipService;
 
+	@Autowired
+	private DBUserService dbuserService;
+
 	@PostMapping("/friendrelationship")
-	public FriendRelationShip createRelation(@RequestParam String userEmail1, @RequestParam String userEmail2)
-			throws Exception {
+	public FriendRelationShip createRelation(@RequestParam String userEmail2) throws Exception {
 		logger.info("Create a new Friend RelationShip in database");
-		return friendRelationShipService.createFriendRelationShip(userEmail1, userEmail2);
+		DBUser dbuser = dbuserService.getCurrentUser();
+		System.out.println("user connected: " + dbuser.getEmail());
+		return friendRelationShipService.createFriendRelationShip(dbuser.getEmail(), userEmail2);
 	}
 
 }
