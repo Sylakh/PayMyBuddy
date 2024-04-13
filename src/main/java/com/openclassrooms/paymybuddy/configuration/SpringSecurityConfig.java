@@ -20,11 +20,12 @@ public class SpringSecurityConfig {
 	private CustomUserDetailsService customUserDetailsService;
 
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http.authorizeHttpRequests(auth -> {
 			auth.requestMatchers("/admin").hasRole("ADMIN");
 			auth.requestMatchers("/user").hasRole("USER");
+			auth.requestMatchers("/login").permitAll();
 			auth.requestMatchers("/dbuser").permitAll();
 			auth.requestMatchers("/bankaccount").authenticated();
 			auth.requestMatchers("/friendrelationship").authenticated();
@@ -34,7 +35,17 @@ public class SpringSecurityConfig {
 
 				.httpBasic(Customizer.withDefaults()) // Active l'authentification Basic Auth pour les requêtes
 														// authentifiées
-				.formLogin(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable);
+				.formLogin(form -> form.loginPage("/login") // Utilisez "/login" pour l'URL de la page de login
+						.loginProcessingUrl("/login") // URL de traitement du formulaire de connexion
+						.usernameParameter("email") // Paramètre de nom d'utilisateur attendu dans le
+						// formulaire de
+						// login
+						.defaultSuccessUrl("/transaction", true) // Page de redirection après une connexion réussie
+						.permitAll() // Autoriser tous les utilisateurs à accéder à la page de login
+				).logout(logout -> logout.logoutUrl("/logout") // URL de déconnexion
+						.logoutSuccessUrl("/login?logout") // Redirigez ici après la déconnexion
+						.permitAll())
+				.csrf(AbstractHttpConfigurer::disable); // Désactiver CSRF pour éviter les conflits dans cet exemple
 
 		return http.build();
 	}
