@@ -20,7 +20,7 @@ public class SpringSecurityConfig {
 	private CustomUserDetailsService customUserDetailsService;
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http.authorizeHttpRequests(auth -> {
 			auth.requestMatchers("/admin").hasRole("ADMIN");
@@ -30,19 +30,23 @@ public class SpringSecurityConfig {
 			auth.requestMatchers("/bankaccount").authenticated();
 			auth.requestMatchers("/friendrelationship").authenticated();
 			auth.requestMatchers("/transaction").authenticated();
+			auth.requestMatchers("/transfert").authenticated();
+			auth.requestMatchers("/contact").authenticated();
 			auth.anyRequest().authenticated();
 		})
 
 				.httpBasic(Customizer.withDefaults()) // Active l'authentification Basic Auth pour les requêtes
 														// authentifiées
 				.formLogin(form -> form.loginPage("/login") // Utilisez "/login" pour l'URL de la page de login
+
 						.loginProcessingUrl("/login") // URL de traitement du formulaire de connexion
 						.usernameParameter("email") // Paramètre de nom d'utilisateur attendu dans le
 						// formulaire de
 						// login
-						.defaultSuccessUrl("/transaction", true) // Page de redirection après une connexion réussie
+						.defaultSuccessUrl("/transfert", true) // Page de redirection après une connexion réussie
 						.permitAll() // Autoriser tous les utilisateurs à accéder à la page de login
-				).logout(logout -> logout.logoutUrl("/logout") // URL de déconnexion
+				).rememberMe(rememberMe -> rememberMe.key("uniqueAndSecret"))
+				.logout(logout -> logout.logoutUrl("/logout") // URL de déconnexion
 						.logoutSuccessUrl("/login?logout") // Redirigez ici après la déconnexion
 						.permitAll())
 				.csrf(AbstractHttpConfigurer::disable); // Désactiver CSRF pour éviter les conflits dans cet exemple

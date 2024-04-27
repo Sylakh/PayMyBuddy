@@ -47,6 +47,9 @@ public class FriendRelationShipService {
 				dbuserRepository.save(dbuser2);
 				logger.info("Creation of a new Friend RelationShip done");
 				return friend1;
+			} else {
+				logger.info("your Friend  not found");
+				throw new Exception("Friend not found");
 			}
 
 		}
