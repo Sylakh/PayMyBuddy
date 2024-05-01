@@ -15,13 +15,14 @@ create table user(
     user_actif boolean
 );
 
-INSERT INTO user (email, password, role, balance) VALUES 
-('user@email.com', '$2y$10$.qkbukzzX21D.bqbI.B2R.tvWP90o/Y16QRWVLodw51BHft7ZWbc.', 'USER', 0),
-('admin@email.com', '$2y$10$kp1V7UYDEWn17WSK16UcmOnFd1mPFVF6UkLrOOCGtf24HOYt8p1iC', 'ADMIN', 0),
-('userA', '$2a$10$FyarOZiEmDf4b6dVI8ZYBOkVlyRa0HW8n9SaRw6sSon925hAQiCNm', 'USER', 1000),
-('userB', '$2a$10$pdfSBcrDLssorgbXKxqC4uKKwehiyixk.TTKpxlks32S/UL33wgQ.', 'USER', 1000),
-('userC', '$2a$10$.FC3iIKetaGX/vDpl6VmW.o6fa9zKSeLcls5coY7jjgymb9cSoXRu', 'USER', 1000),
-('userD', '$2a$10$Zjyc7mnVKxI71PdSoJgCxOKbFmU1yn74hVPTWS9kdOS1Po/ZdHvDO', 'USER', 1000);
+INSERT INTO user (email, password, role, balance, nickname) VALUES 
+('user@email.com', '$2y$10$.qkbukzzX21D.bqbI.B2R.tvWP90o/Y16QRWVLodw51BHft7ZWbc.', 'USER', 2000, 'User'),
+('admin@email.com', '$2y$10$kp1V7UYDEWn17WSK16UcmOnFd1mPFVF6UkLrOOCGtf24HOYt8p1iC', 'ADMIN', 2000, 'Admin'),
+('userA@email.com', '$2a$10$c7xnYElkWkX79GFlZPONAOVjINHgtWjWRacpYsc30PhpEk4CruwzG', 'USER', 1000, 'UserA'),
+('userB@email.com', '$2a$10$.Xrmk3gtZ55ORVl3kY6RV.ok8s.ZvEb03a3aleBNyTEvUBkXy/lVG', 'USER', 1000, 'UserB'),
+('userC@email.com', '$2a$10$2WrJ9RxRot6URMtdHjv5JOMpoZA6RWrP.whZg4naUgtn9Zqvcja76', 'USER', 1000, 'UserC'),
+('userD@email.com', '$2a$10$imu7.j92EPZ20KP/SrrI6uaM4Pl1Ehbde6YT98/fwWxv2WSbHF1UK', 'USER', 1000, 'UserD'),
+('userE@email.com', '$$2a$10$qnJUZA0YmPh/8mfWWW1WwOSFo4McDZba72v7U5.4CCjkUMrVFqTKO', 'USER', 1000, 'UserE');
 
 commit;
 
@@ -36,7 +37,7 @@ create table friendrelationship(
 INSERT INTO friendrelationship (user_id, friend_id) VALUES
 (3,4), (4,3),
 (3,5), (5,3),
-(4,6), (6,3);
+(4,6), (6,4);
 
 commit;
 

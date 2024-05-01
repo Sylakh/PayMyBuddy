@@ -17,7 +17,7 @@
                         <a class="nav-link" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Transfert</a>
+                        <a class="nav-link" href="/transfert">Transfert</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Profil</a>
@@ -26,7 +26,7 @@
                         <a class="nav-link" href="#">Contact</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Log off</a>
+                        <a class="nav-link" href="/logout">Log out</a>
                     </li>
                 </ul>
             </div>
@@ -45,9 +45,10 @@
                     <form
 			            class="encart d-flex flex-column align-items-center"
 			            style="border: solid 2px; border-radius: 7px; padding: 25px; color: grey"
-			            th:action="@{/addcontact}" method="POST">
-			<input class="form-control" type="text" name="contact" placeholder="Contact to add" required th:name="connection">
-			
+			            th:action="@{/contact}" method="POST">
+			<input class="form-control" type="email" name="contact" placeholder="Email of the contact to add" required th:name="connection">
+			<div th:if="${errorMessage != null}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
 			<button style="margin-top: 50px" type="submit"
 				class="btn btn-primary">Add</button>
 		</form> 

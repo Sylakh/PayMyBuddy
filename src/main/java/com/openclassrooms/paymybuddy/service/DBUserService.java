@@ -51,4 +51,28 @@ public class DBUserService {
 			throw new Exception("User does not exist (email provided: " + email + ")");
 		}
 	}
+
+	public String findNicknameById(Long id) {
+		Optional<DBUser> optionalDBUser = dbuserRepository.findById(id);
+		if (optionalDBUser.isPresent()) {
+			DBUser dbuser = optionalDBUser.get();
+			if (dbuser.getNickName() == null) {
+				return "unknown";
+			} else {
+				return dbuser.getNickName();
+			}
+		} else {
+			return "customer not available";
+		}
+	}
+
+	public Long findIdByNickName(String nickName) {
+		Optional<DBUser> optionalDBUser = dbuserRepository.findIdByNickName(nickName);
+		if (optionalDBUser.isPresent()) {
+			DBUser dbuser = optionalDBUser.get();
+			return dbuser.getId();
+		} else {
+			return (long) -1;
+		}
+	}
 }

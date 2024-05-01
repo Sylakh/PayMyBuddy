@@ -33,6 +33,14 @@ public class FriendRelationShipService {
 				List<FriendRelationShip> friends2 = new ArrayList<>();
 				friends1 = dbuser1.getFriends();
 				friends2 = dbuser2.getFriends();
+				// verifier déjà ami ou non donc si dbuser2 est dans friends1 ou si soit meme
+				for (FriendRelationShip friendRelationShip : friends1) {
+					if (friendRelationShip.getFriend_id() == dbuser2.getId()
+							|| friendRelationShip.getFriend_id() == dbuser1.getId()) {
+						logger.info("your are already friend");
+						throw new Exception("already friend");
+					}
+				}
 				FriendRelationShip friend1 = new FriendRelationShip();
 				friend1.setUser(dbuser1);
 				friend1.setFriend_id(dbuser2.getId());

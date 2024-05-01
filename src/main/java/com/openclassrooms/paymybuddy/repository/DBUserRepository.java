@@ -14,4 +14,6 @@ public interface DBUserRepository extends JpaRepository<DBUser, Long> {
 
 	Optional<DBUser> findById(Long id);
 
+	Optional<DBUser> findIdByNickName(String nickName);
+
 }
