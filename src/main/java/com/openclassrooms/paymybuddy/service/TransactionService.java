@@ -1,15 +1,21 @@
 package com.openclassrooms.paymybuddy.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.openclassrooms.paymybuddy.DTO.TransactionDTO;
 import com.openclassrooms.paymybuddy.model.BankAccount;
 import com.openclassrooms.paymybuddy.model.DBUser;
 import com.openclassrooms.paymybuddy.model.FriendRelationShip;
@@ -130,6 +136,23 @@ public class TransactionService {
 			throw new Exception("emitter of the transaction not found");
 		}
 
+	}
+
+	public Page<TransactionDTO> findPaginated(Pageable pageable, List<TransactionDTO> transactionsDTO) {
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		List<TransactionDTO> list;
+
+		if (transactionsDTO.size() < startItem) {
+			list = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, transactionsDTO.size());
+			list = transactionsDTO.subList(startItem, toIndex);
+		}
+		Page<TransactionDTO> transactionsPage = new PageImpl<TransactionDTO>(list,
+				PageRequest.of(currentPage, pageSize), transactionsDTO.size());
+		return transactionsPage;
 	}
 
 }

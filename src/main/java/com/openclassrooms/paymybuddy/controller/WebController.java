@@ -1,13 +1,19 @@
 package com.openclassrooms.paymybuddy.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +50,11 @@ public class WebController {
 	}
 
 	@GetMapping("/transfert")
-	public ModelAndView transfertPage() throws Exception {
+	public ModelAndView transfertPage(@RequestParam("page") Optional<Integer> page,
+			@RequestParam("size") Optional<Integer> size) throws Exception {
+
+		int currentPage = page.orElse(1);
+		int pageSize = size.orElse(3);
 
 		DBUser dbuser = dbuserService.getCurrentUser();
 		List<Transaction> transactions = new ArrayList<Transaction>();
@@ -68,12 +78,23 @@ public class WebController {
 					transaction.getAmount());
 			transactionsDTO.add(transactionDTO);
 		}
-
+		Collections.reverse(transactionsDTO);
+		Page<TransactionDTO> transactionsDTOPage = transactionService
+				.findPaginated(PageRequest.of(currentPage - 1, pageSize), transactionsDTO);
 		Map<String, Object> model = new HashMap<String, Object>();
 
 		model.put("credit", dbuser.getBalance());
-		model.put("transactionsDTO", transactionsDTO);
+		// model.put("transactionsDTO", transactionsDTO);
+		model.put("transactionsDTOPage", transactionsDTOPage);
 		model.put("friends", friendList);
+		model.put("currentPage", currentPage); // add pagination
+
+		int totalPages = transactionsDTOPage.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+			model.put("pageNumbers", pageNumbers);
+		}
+		model.put("totalPages", totalPages); // add pagination
 
 		return new ModelAndView(viewName, model);
 	}
@@ -121,35 +142,14 @@ public class WebController {
 		return new ModelAndView(redirectView);
 	}
 
-	@PostMapping("/addtransfer1")
-	public ModelAndView addtransfer1(@RequestParam String connection, @RequestParam String amount,
-			@RequestParam String description) throws NumberFormatException, Exception {
-
-		DBUser dbuser = dbuserService.getCurrentUser();
-
-		try {
-			transactionService.createTransaction(dbuser.getEmail(), dbuserService.findIdByNickName(connection),
-					Double.parseDouble(amount), false, description);
-		} catch (Exception e) {
-			RedirectView redirectView = new RedirectView();
-
-			redirectView.setUrl("/transfert?errorMessage=not+enough+funds");
-			redirectView.addStaticAttribute("errorMessage", "not enough funds");
-
-			return new ModelAndView(redirectView);
-		}
-
-		RedirectView redirectView = new RedirectView();
-		redirectView.setUrl("/transfert");
-
-		return new ModelAndView(redirectView);
-	}
-
 	@PostMapping("/transfer")
 	public ModelAndView addtransfer(@RequestParam String connection, @RequestParam String amount,
-			@RequestParam String description) throws NumberFormatException, Exception {
+			@RequestParam String description, @RequestParam("page") Optional<Integer> page)
+			throws NumberFormatException, Exception {
 
 		DBUser dbuser = dbuserService.getCurrentUser();
+		int currentPage = page.orElse(1);
+		int pageSize = 3;
 
 		try {
 			transactionService.createTransaction(dbuser.getEmail(), dbuserService.findIdByNickName(connection),
@@ -177,12 +177,26 @@ public class WebController {
 				transactionsDTO.add(transactionDTO);
 			}
 
+			Collections.reverse(transactionsDTO);
+			Page<TransactionDTO> transactionsDTOPage = transactionService
+					.findPaginated(PageRequest.of(currentPage - 1, pageSize), transactionsDTO);
 			Map<String, Object> model = new HashMap<String, Object>();
 
 			model.put("credit", dbuser.getBalance());
-			model.put("transactionsDTO", transactionsDTO);
+			// model.put("transactionsDTO", transactionsDTO);
+			model.put("errorMessage", "error, transaction failed!");
+			model.put("transactionsDTOPage", transactionsDTOPage);
 			model.put("friends", friendList);
-			model.put("errorMessage", "Failed to transfer");
+			model.put("currentPage", currentPage); // add pagination
+
+			int totalPages = transactionsDTOPage.getTotalPages();
+
+			if (totalPages > 0) {
+				List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+				model.put("pageNumbers", pageNumbers);
+			}
+			model.put("totalPages", totalPages); // add pagination
+
 			return new ModelAndView(viewName, model);
 		}
 
