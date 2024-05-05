@@ -41,15 +41,14 @@ public class SpringSecurityConfig {
 
 						.loginProcessingUrl("/login") // URL de traitement du formulaire de connexion
 						.usernameParameter("email") // Paramètre de nom d'utilisateur attendu dans le
-						// formulaire de
-						// login
+													// formulaire de login
 						.defaultSuccessUrl("/transfert", true) // Page de redirection après une connexion réussie
 						.permitAll() // Autoriser tous les utilisateurs à accéder à la page de login
 				).rememberMe(rememberMe -> rememberMe.key("uniqueAndSecret"))
 				.logout(logout -> logout.logoutUrl("/logout") // URL de déconnexion
 						.logoutSuccessUrl("/login?logout") // Redirigez ici après la déconnexion
 						.permitAll())
-				.csrf(AbstractHttpConfigurer::disable); // Désactiver CSRF pour éviter les conflits dans cet exemple
+				.csrf(AbstractHttpConfigurer::disable); // Désactiver CSRF pour éviter les conflits
 
 		return http.build();
 	}

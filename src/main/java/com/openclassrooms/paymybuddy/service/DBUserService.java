@@ -37,6 +37,7 @@ public class DBUserService {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.isAuthenticated()) {
 			String email = auth.getName();
+			logger.info("get current user done");
 			return getUser(email);
 		} else {
 			throw new Exception("User is not authenticated or does not exist");

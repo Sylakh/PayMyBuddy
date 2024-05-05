@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +18,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import com.openclassrooms.paymybuddy.DTO.TransactionDTO;
 import com.openclassrooms.paymybuddy.model.BankAccount;
 import com.openclassrooms.paymybuddy.model.DBUser;
 import com.openclassrooms.paymybuddy.model.FriendRelationShip;
@@ -137,5 +143,41 @@ public class TransactionServiceTest {
 				.createTransaction(emitter.getEmail(), receiver.getId(), 100.0, false, "Not enough funds"));
 
 		assertEquals("not enough fund for this transaction", exception.getMessage());
+	}
+
+	@Test
+	void testFindPaginated_ValidPagination() {
+		// Arrange
+		List<TransactionDTO> transactionsDTO = new ArrayList<>();
+		for (int i = 1; i <= 10; i++) {
+			transactionsDTO.add(new TransactionDTO("user", "description" + i, 10));
+		}
+		Pageable pageable = PageRequest.of(0, 5); // First page, 5 items per page
+
+		// Act
+		Page<TransactionDTO> page = transactionService.findPaginated(pageable, transactionsDTO);
+
+		// Assert
+		assertEquals(5, page.getSize());
+		assertEquals(0, page.getNumber());
+		assertEquals(10, page.getTotalElements());
+		assertEquals(2, page.getTotalPages());
+	}
+
+	@Test
+	void testFindPaginated_EmptyPage() {
+		// Arrange
+		List<TransactionDTO> transactionsDTO = new ArrayList<>();
+		for (int i = 1; i <= 10; i++) {
+			transactionsDTO.add(new TransactionDTO("user", "description" + i, 10));
+		}
+		Pageable pageable = PageRequest.of(3, 5); // Fourth page, which will be empty
+
+		// Act
+		Page<TransactionDTO> page = transactionService.findPaginated(pageable, transactionsDTO);
+
+		// Assert
+		assertTrue(page.getContent().isEmpty());
+		assertEquals(3, page.getNumber());
 	}
 }

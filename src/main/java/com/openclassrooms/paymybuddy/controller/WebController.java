@@ -46,12 +46,16 @@ public class WebController {
 	@GetMapping("/login")
 	public String loginPage() {
 
+		logger.info("get request at /login");
+
 		return "login";
 	}
 
 	@GetMapping("/transfert")
 	public ModelAndView transfertPage(@RequestParam("page") Optional<Integer> page,
 			@RequestParam("size") Optional<Integer> size) throws Exception {
+
+		logger.info("get request at /transfert");
 
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(3);
@@ -101,7 +105,7 @@ public class WebController {
 
 	@GetMapping("/")
 	public ModelAndView rememberMeResultPage() {
-
+		logger.info("get request at /");
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl("/transfert");
 
@@ -110,7 +114,7 @@ public class WebController {
 
 	@GetMapping("/contact")
 	public ModelAndView contactPage() {
-
+		logger.info("get request at /contact");
 		String viewName = "contact";
 
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -121,6 +125,7 @@ public class WebController {
 	@PostMapping("/contact")
 	public ModelAndView addContact(@RequestParam String connection) throws Exception {
 
+		logger.info("post request at /contact");
 		logger.info("Create a new Friend RelationShip in database");
 
 		DBUser dbuser = dbuserService.getCurrentUser();
@@ -146,6 +151,8 @@ public class WebController {
 	public ModelAndView addtransfer(@RequestParam String connection, @RequestParam String amount,
 			@RequestParam String description, @RequestParam("page") Optional<Integer> page)
 			throws NumberFormatException, Exception {
+
+		logger.info("post request at /transfert");
 
 		DBUser dbuser = dbuserService.getCurrentUser();
 		int currentPage = page.orElse(1);
@@ -183,7 +190,6 @@ public class WebController {
 			Map<String, Object> model = new HashMap<String, Object>();
 
 			model.put("credit", dbuser.getBalance());
-			// model.put("transactionsDTO", transactionsDTO);
 			model.put("errorMessage", "error, transaction failed!");
 			model.put("transactionsDTOPage", transactionsDTOPage);
 			model.put("friends", friendList);

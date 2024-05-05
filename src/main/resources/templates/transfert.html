@@ -82,7 +82,7 @@
                         <form class="encart d-flex align-items-center justify-content-center" style="padding: 25px; background-color: lightgrey" th:action="@{/transfer}" method="POST">
                             <div class="row mx-0">
                                 <div class="col">
-                                        <select id="connection-select" name="connection" class="form-control">
+                                        <select  name="connection" class="form-control">
                                             <option>Select A connection</option>
                                             <option th:each="friend : ${friends}" th:text="${friend}"></option>
                                         </select>
@@ -94,7 +94,7 @@
                                     <input class="form-control" type="text" name="Description" maxlength="25" placeholder="Description" required th:name="description">
                                 </div>
                                 <div class="col">
-                                    <button id="submit_sign_in" style="padding-left:50px; padding-right:50px;" type="submit" class="Btn_link btn btn-success">Pay</button>
+                                    <button  style="padding-left:50px; padding-right:50px;" type="submit" class="Btn_link btn btn-success">Pay</button>
                                 </div>
                             </div>
                         </form>
@@ -188,47 +188,6 @@
     
     
     </div>  
-                    <!--
-                    <div class="container">
-                        <div class="row">
-                            <div  th:if="${totalPages gt 0}">
-                                <ul class="pagination justify-content-center font-weight-medium">
-                                    <li class="page-item" th:classappend="${currentPage eq 0} ? 'disabled'">
-                                        <a class="page-link svg-icon"
-                                            th:href="@{transfert?page={id}(id=${currentPage lt 2 ? 1 : currentPage})}"
-                                            aria-label="Previous"
-                                            title="Previous Page" rel="tooltip">
-                                            <span aria-hidden="true" width="20" height="20"><i class="fa fa-chevron-left"></i></span>
-                                        </a>
-                                    </li>
-
-                                    <li class="page-item" th:classappend="${i eq currentPage+1} ? 'active'"
-                                        th:each="i : ${#numbers.sequence( 1, totalPages > 5 + currentPage ? currentPage + 5 : totalPages, 1)}">
-                                        <a class="page-link" th:href="@{transfert?page={id}(id=${i})}" th:text="${i}"
-                                            th:title="${'Page '+ i}"
-                                            rel="tooltip">
-                                        </a>
-                                    </li>
-
-                                    <li class="page-item disabled" th:if="${currentPage + 5 < totalPages}">
-                                        <a class="page-link svg-icon" href="#">
-                                            <span width="20" height="20"><i class="fa fa-ellipsis-h"></span>
-                                        </a>
-                                    </li>
-
-                                    <li class="page-item" th:classappend="${currentPage+1 eq totalPages} ? 'disabled'">
-                                        <a class="page-link svg-icon" th:href="@{transfert?page={id}(id=${currentPage + 2})}"
-                                            aria-label="Next"
-                                            title="Next Page" rel="tooltip">
-                                            <span aria-hidden="true" width="20" height="20"><i class="fa fa-chevron-right"></i></span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>  
-                    </div>-->
-         
-
 
   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

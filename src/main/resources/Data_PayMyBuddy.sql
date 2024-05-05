@@ -5,13 +5,13 @@ use paymybuddy;
 /* TABLE user */
 create table user(
     id int PRIMARY KEY AUTO_INCREMENT,
-    email varchar(255) UNIQUE NOT NULL,
-    password varchar(255) NOT NULL,
-    role varchar(255) NOT NULL,
+    email varchar(63) UNIQUE NOT NULL,
+    password varchar(63) NOT NULL,
+    role varchar(31) NOT NULL,
     balance decimal(6,2),
-    nickname varchar(255),
-    firstname VARCHAR(100),
-    lastname VARCHAR(100),
+    nickname varchar(31),
+    firstname VARCHAR(31),
+    lastname VARCHAR(31),
     user_actif boolean
 );
 
@@ -44,8 +44,8 @@ commit;
 /* TABLE bankaccount */
 create table bankaccount(
     id int PRIMARY KEY AUTO_INCREMENT,
-    bankname varchar(255),
-    iban varchar(255),
+    bankname varchar(63),
+    iban varchar(31),
     user_id int NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
@@ -70,7 +70,7 @@ create table transaction(
     withdraw boolean,
     amount decimal(6,2),
     date date,
-    description varchar(255),
+    description varchar(63),
     status boolean,
     FOREIGN KEY (emitter_id) REFERENCES user(id)
 );

@@ -9,6 +9,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -75,5 +77,45 @@ public class FriendRelationShipServiceTest {
 
 		assertTrue(actualMessage.contains(expectedMessage));
 		verify(dbuserRepository, never()).save(any(DBUser.class));
+	}
+
+	@Test
+	public void createFriendRelationShip_AlreadyFriends() {
+		DBUser user1 = new DBUser();
+		user1.setId((long) 1);
+		user1.setEmail("user1@example.com");
+
+		DBUser user2 = new DBUser();
+		user2.setId((long) 1);
+		user2.setEmail("user2@example.com");
+
+		FriendRelationShip existingFriendship = new FriendRelationShip();
+		existingFriendship.setFriend_id((long) 1);
+
+		List<FriendRelationShip> friends = new ArrayList<>();
+		friends.add(existingFriendship);
+
+		user1.setFriends(friends);
+
+		when(dbuserRepository.findByEmail("user1@example.com")).thenReturn(Optional.of(user1));
+		when(dbuserRepository.findByEmail("user2@example.com")).thenReturn(Optional.of(user2));
+
+		Exception exception = assertThrows(Exception.class, () -> {
+			friendRelationShipService.createFriendRelationShip("user1@example.com", "user2@example.com");
+		});
+
+		assertEquals("already friend", exception.getMessage());
+	}
+
+	@Test
+	public void createFriendRelationShip_UserNotFound() {
+		when(dbuserRepository.findByEmail("user1@example.com")).thenReturn(Optional.of(user1));
+		when(dbuserRepository.findByEmail("user2@example.com")).thenReturn(Optional.empty());
+
+		Exception exception = assertThrows(Exception.class, () -> {
+			friendRelationShipService.createFriendRelationShip("user1@example.com", "user2@example.com");
+		});
+
+		assertEquals("Friend not found", exception.getMessage());
 	}
 }
